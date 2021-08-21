@@ -1,4 +1,4 @@
-source "hcloud" "nixos_server" {
+source "hcloud" "server" {
   server_name = "${var.snapshot_name}-builder"
 
   snapshot_name = "${var.snapshot_name}-${timestamp()}"
@@ -10,18 +10,18 @@ source "hcloud" "nixos_server" {
   rescue = "linux64"
 
   server_type = var.server_type
-  location    = var.location
+  location    = var.server_location
 
   ssh_username = "root"
 }
 
 build {
-  sources = ["source.hcloud.nixos_server"]
+  sources = ["source.hcloud.server"]
 
   provisioner "shell" {
     environment_vars = [
-      "FLAKE_REF=${var.flake_ref}",
-      "PART_SCHEME=${var.part_scheme}",
+      "FLAKE_REF=${var.image_flake_ref}",
+      "PART_SCHEME=${var.image_part_scheme}",
     ]
     scripts = [
       "scripts/format-drive.sh",
